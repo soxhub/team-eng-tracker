@@ -1,0 +1,20 @@
+title: Team Engineering Tracker
+description: Weekly engineering audit reports
+
+theme: minima
+
+markdown: kramdown
+highlighter: rouge
+
+# Exclude non-report files from Jekyll build
+exclude:
+  - hack/
+  - Makefile
+  - config.yaml
+  - README.md
+  - "*.lock"
+  - vendor/
+
+# Include hidden files Jekyll would skip
+include:
+  - _index.md

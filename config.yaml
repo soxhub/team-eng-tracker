@@ -1,0 +1,89 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Team Engineering Tracker — Configuration
+#
+# 1. Fill in your team details below.
+# 2. Add each engineer you want to track.
+# 3. Optionally add initiatives (epics, PEDIP themes, OKRs, etc.) for
+#    the monthly alignment section.
+# 4. Run `make new-week` to scaffold the next week directory.
+# 5. Open Claude Code and say "generate W0X reports for last week" —
+#    Claude reads this config and does the rest.
+# ─────────────────────────────────────────────────────────────────────────────
+
+team:
+  name: "My Engineering Team"       # Human-readable team name (used in report headers)
+  slug: "my-eng-team"               # Short identifier (used in directory paths)
+
+jira:
+  cloud: "auditboard.atlassian.net" # Atlassian cloud URL
+  projects:                         # Jira project keys Claude should search
+    - SRE
+    - ENG
+  # Projects to exclude from searches (optional — reduces noise from shared projects)
+  exclude_projects: []
+
+github:
+  org: "soxhub"                     # GitHub org containing your team's repos
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Engineers
+# Each engineer needs:
+#   name            — display name used in report filenames and headers
+#   github          — GitHub username (for gh search prs)
+#   jira_account_id — Jira accountId UUID (run `make lookup-jira` to discover)
+#   active          — false = engineer has left the team; still appears in
+#                     historical reports but skipped for new weeks
+#   notes           — optional context (e.g. "Joined 2026-06-01", "On leave W03")
+# ─────────────────────────────────────────────────────────────────────────────
+engineers:
+  - name: "Alice Smith"
+    github: "asmith"
+    jira_account_id: ""              # e.g. "712020:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    active: true
+
+  - name: "Bob Jones"
+    github: "bjones"
+    jira_account_id: ""
+    active: true
+
+  - name: "Carol Lee"
+    github: "carol-lee"
+    jira_account_id: ""
+    active: true
+    notes: "Joined 2026-03-01"
+
+  # Example departed engineer — kept for historical reports
+  # - name: "Dan Kim"
+  #   github: "dkim"
+  #   jira_account_id: ""
+  #   active: false
+  #   notes: "Departed 2026-05-15"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Initiatives
+# Named initiatives that appear in the monthly "Alignment" section.
+# These map engineers' week-by-week work to strategic themes.
+#
+# jira_keys — Jira epic keys or initiative keys (PEDIP-XXXX, PROJ-XXXX, etc.)
+# jql_filter — optional custom JQL to find tickets under this initiative
+#              (if omitted, Claude searches using jira_keys + team member names)
+# ─────────────────────────────────────────────────────────────────────────────
+initiatives:
+  - name: "API Modernization"
+    description: "Migrate legacy endpoints to the V2 API surface"
+    jira_keys:
+      - ENG-1234          # Replace with your epic/initiative keys
+    quarter: "Q2 2026"
+
+  - name: "Platform Reliability"
+    description: "SLO improvements, on-call reduction, and incident tooling"
+    jira_keys:
+      - SRE-5000
+    quarter: "Q2 2026"
+
+  # Add more initiatives as needed
+  # - name: "Security Hardening"
+  #   description: "CVE remediation and security posture improvements"
+  #   jira_keys:
+  #     - SRE-9999
+  #   quarter: "Q2 2026"

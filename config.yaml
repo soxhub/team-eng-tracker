@@ -26,11 +26,28 @@ github:
   org: "soxhub"                     # GitHub org containing your team's repos
 
 # ─────────────────────────────────────────────────────────────────────────────
+# FireHydrant (optional)
+# Enables incident tracking via scripts/fh-incidents.py.
+#
+# team_id — FireHydrant team UUID (find it in FH team settings URL or API)
+# token   — FireHydrant API token; prefer FH_TOKEN env var over storing here
+#
+# To find your team_id:
+#   curl -s -H "Authorization: Bearer $FH_TOKEN" \
+#     "https://api.firehydrant.io/v1/teams?query=<your-team-name>" | jq '.[].id'
+# ─────────────────────────────────────────────────────────────────────────────
+firehydrant:
+  team_id: ""           # FireHydrant team UUID
+  token: ""             # Optional; prefer FH_TOKEN env var
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Engineers
 # Each engineer needs:
 #   name            — display name used in report filenames and headers
 #   github          — GitHub username (for gh search prs)
 #   jira_account_id — Jira accountId UUID (run `make lookup-jira` to discover)
+#   fh_user_id      — FireHydrant user UUID (optional; leave blank to skip FH tracking)
+#                     Find it: GET /v1/users?query=<email> in FH API
 #   active          — false = engineer has left the team; still appears in
 #                     historical reports but skipped for new weeks
 #   notes           — optional context (e.g. "Joined 2026-06-01", "On leave W03")
@@ -39,16 +56,19 @@ engineers:
   - name: "Alice Smith"
     github: "asmith"
     jira_account_id: ""              # e.g. "712020:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    fh_user_id: ""                   # e.g. "de4b5855-3fa6-4b18-8fb4-5253f3b12c1c"
     active: true
 
   - name: "Bob Jones"
     github: "bjones"
     jira_account_id: ""
+    fh_user_id: ""
     active: true
 
   - name: "Carol Lee"
     github: "carol-lee"
     jira_account_id: ""
+    fh_user_id: ""
     active: true
     notes: "Joined 2026-03-01"
 
@@ -56,6 +76,7 @@ engineers:
   # - name: "Dan Kim"
   #   github: "dkim"
   #   jira_account_id: ""
+  #   fh_user_id: ""
   #   active: false
   #   notes: "Departed 2026-05-15"
 

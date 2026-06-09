@@ -109,7 +109,58 @@ config.yaml               ← Team configuration (edit this)
 CLAUDE.md                 ← Instructions for Claude Code (do not edit unless customizing)
 hack/
   new_week.py             ← Week scaffolding script
+scripts/
+  fh-incidents.py         ← FireHydrant incident scraper (optional)
 ```
+
+## FireHydrant Incident Tracking (Optional)
+
+If your team uses FireHydrant, you can add a per-engineer incident section to each weekly file automatically.
+
+### Setup
+
+1. Add your FireHydrant team ID and engineer user IDs to `config.yaml`:
+
+```yaml
+firehydrant:
+  team_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"   # FireHydrant team UUID
+
+engineers:
+  - name: "Alice Smith"
+    fh_user_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"  # FireHydrant user UUID
+    # ... other fields
+```
+
+2. Set your API token:
+
+```bash
+export FH_TOKEN=fhb-xxxxxxxxxxxxxxxx
+```
+
+Find your `team_id`:
+```bash
+curl -s -H "Authorization: Bearer $FH_TOKEN" \
+  "https://api.firehydrant.io/v1/teams?query=<your-team-name>" | python3 -m json.tool
+```
+
+Find each engineer's `fh_user_id`:
+```bash
+curl -s -H "Authorization: Bearer $FH_TOKEN" \
+  "https://api.firehydrant.io/v1/users?query=<email>" | python3 -m json.tool
+```
+
+### Running the script
+
+```bash
+# After generating weekly report files, patch in incident data
+python3 scripts/fh-incidents.py \
+  --start 2026-06-02 --end 2026-06-08 \
+  --patch reports/2026/06/W02
+```
+
+This inserts or replaces a `## FireHydrant Incidents` table in each engineer's file. The script uses two sources: formal **role assignments** (Commander, Responder, SME) and the **event timeline** (chat messages, runbook steps — catches engineers who were active without a formal role).
+
+Use `--no-events` to skip the event timeline scan if you only want role-based data (faster).
 
 ## Customizing
 

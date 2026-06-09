@@ -15,6 +15,7 @@ Before doing anything, read `config.yaml`. It tells you:
 - **`github.org`** — the GitHub org for `gh search prs` queries
 - **`engineers[]`** — list of engineers to track (skip `active: false` engineers for new weeks)
 - **`initiatives[]`** — named initiatives to map in the monthly alignment section
+- **`firehydrant.team_id`** — if set, `scripts/fh-incidents.py` can add an incident section to each engineer file
 
 ## Jira Tools
 
@@ -63,6 +64,37 @@ gh search prs --author {github_handle} --updated ">={YYYY-MM-DD}" "org:{github_o
 ```
 
 Merge both result sets, deduplicating by PR number. Include PRs whose `createdAt` is within the week OR whose `updatedAt` is within the week. Exclude Renovate/Dependabot bot PRs unless the engineer authored them intentionally.
+
+## FireHydrant Incident Tracking (Optional)
+
+If `firehydrant.team_id` is set in `config.yaml` and engineers have `fh_user_id` values, you can enrich each engineer file with a `## FireHydrant Incidents` section:
+
+```bash
+# Dry-run — print all engineers' incident sections to stdout
+python3 scripts/fh-incidents.py --start YYYY-MM-DD --end YYYY-MM-DD
+
+# Patch mode — insert/replace "## FireHydrant Incidents" in each engineer's .md file
+python3 scripts/fh-incidents.py --start YYYY-MM-DD --end YYYY-MM-DD --patch reports/YYYY/MM/WNN
+
+# Faster: skip event timeline scan (role assignments only)
+python3 scripts/fh-incidents.py --start YYYY-MM-DD --end YYYY-MM-DD --patch reports/YYYY/MM/WNN --no-events
+```
+
+Set `FH_TOKEN` env var or add `firehydrant.token` to config.yaml. The script uses two signal sources:
+- **Role assignments** — Commander, Responder, Subject matter expert (direct FH role data)
+- **Event timeline** — chat messages, status updates, runbook steps (catches engineers active without a formal role)
+
+Each engineer file gets a section inserted after `## Pull Requests`:
+
+```markdown
+## FireHydrant Incidents
+
+| Date | # | Incident | Severity | Role |
+|------|---|----------|----------|------|
+| Jun 2 | [1597](url) | Service CPU spikes | SEV3 | Subject matter expert |
+```
+
+When generating weekly reports, mention to the user that they can run the script afterward to add incident data. Don't run it yourself — it requires a live FireHydrant API token.
 
 ## Directory Structure
 

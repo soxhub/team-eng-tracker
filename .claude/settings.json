@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_atlassian_atlassian__lookupJiraAccountId",
+      "mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql",
+      "mcp__plugin_atlassian_atlassian__getJiraIssue",
+      "mcp__claude_ai_Auditboard_Atlassian_MCP__searchJiraIssuesUsingJql",
+      "Bash(gh search prs *)",
+      "Bash(python hack/new_week.py *)",
+      "Bash(make new-week *)",
+      "Bash(git add reports/ *)"
+    ]
+  }
+}
